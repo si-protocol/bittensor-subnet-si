@@ -12,4 +12,6 @@ if [ $rc -eq 7 ]; then
     exit 1
 fi
 
-python neurons/miner.py --netuid 2 --subtensor.chain_endpoint ws://127.0.0.1:9944 --subtensor.network local --wallet.name miner --wallet.hotkey default --logging.debug
+
+echo "Running miner"
+python neurons/miner.py --netuid 2 --subtensor.chain_endpoint ws://127.0.0.1:9944 --subtensor.network local --wallet.name miner --wallet.hotkey default --logging.debug --neuron.epoch_length 2 --axon.port 8901

@@ -89,7 +89,7 @@ echo "Adding stake to the validator"
 btcli stake add --wallet.name validator --wallet.hotkey default --subtensor.chain_endpoint ws://127.0.0.1:9944 --amount 10 --partial
 
 echo "Adding stake to the miner"
-btcli stake add --wallet.name miner --wallet.hotkey default --subtensor.chain_endpoint ws://127.0.0.1:9944 --amount 2
+btcli stake add --wallet.name miner --wallet.hotkey default --subtensor.chain_endpoint ws://127.0.0.1:9944 --amount 2 --partial
 
 # Ensure both the miner and validator keys are successfully registered.
 echo "Listing subnets"

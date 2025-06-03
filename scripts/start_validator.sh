@@ -11,4 +11,6 @@ if [ $rc -eq 7 ]; then
     echo "cd ../subtensor && BUILD_BINARY=1 ./scripts/localnet.sh --no-purge"
     exit 1
 fi
-python neurons/validator.py --netuid 2 --subtensor.chain_endpoint ws://127.0.0.1:9944 --subtensor.network local --wallet.name validator --wallet.hotkey default --logging.debug
+
+echo "Running validator"
+python neurons/validator.py --netuid 2 --subtensor.chain_endpoint ws://127.0.0.1:9944 --subtensor.network local --wallet.name validator --wallet.hotkey default --logging.debug --neuron.epoch_length 3
