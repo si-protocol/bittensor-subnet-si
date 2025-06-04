@@ -134,11 +134,12 @@ class Validator(BaseValidatorNeuron):
         client = ValidatorClient(self.uid)
         result = client.post("/sapi/node/task/validate", json={"uids": uids, "statuses": statuses})
         bt.logging.info(f"Validate result: {result}")
+        values = result.get('values', [])
+        total = sum(result['values'])
         if result.get("error"):
             bt.logging.error(f"Validate error: {result.get('error')}")
-        elif len(result['values']) == len(uids) and result['uids'] == uids:
-            total = sum(result['values'])
-            rewards = [x / total for x in result['values']]
+        elif len(values) == len(uids) and result['uids'] == uids and total > 0:
+            rewards = [x / total for x in values]
             bt.logging.info(f"Scored responses: {rewards}")
             # Update the scores based on the rewards. You may want to define your own update_scores function for custom behavior.
             self.update_scores(rewards, miner_uids)
