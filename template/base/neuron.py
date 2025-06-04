@@ -162,7 +162,7 @@ class BaseNeuron(ABC):
             return False
 
         # Define appropriate logic for when set weights.
-        bt.logging.trace(f"should_set_weights() | Block: {self.block} - {self.metagraph.last_update[self.uid]} > {self.config.neuron.epoch_length}")
+        bt.logging.debug(f"should_set_weights() | Block: {self.block} - {self.metagraph.last_update[self.uid]} > {self.config.neuron.epoch_length}")
         return (
             (self.block - self.metagraph.last_update[self.uid])
             > self.config.neuron.epoch_length

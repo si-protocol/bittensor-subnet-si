@@ -35,6 +35,8 @@ from template.utils.uids import get_random_uids
 import services.protocol as protocol
 from services.config import settings
 
+from services.api import ValidatorClient
+
 
 class Validator(BaseValidatorNeuron):
     """
@@ -124,13 +126,25 @@ class Validator(BaseValidatorNeuron):
         # Log the results for monitoring purposes.
         bt.logging.info(f"Received responses: {responses}")
 
-        # TODO(developer): Define how the validator scores responses.
-        # Adjust the scores based on responses from miners.
-        rewards = get_rewards(self, query=self.step, responses=responses)
+        statuses = []
+        for response in responses:
+            statuses.append(response.get("status", ""))
 
-        bt.logging.info(f"Scored responses: {rewards}")
-        # Update the scores based on the rewards. You may want to define your own update_scores function for custom behavior.
-        self.update_scores(rewards, miner_uids)
+        uids = miner_uids.tolist()
+        client = ValidatorClient(self.uid)
+        result = client.post("/sapi/node/task/validate", json={"uids": uids, "statuses": statuses})
+        bt.logging.info(f"Validate result: {result}")
+        if result.get("error"):
+            bt.logging.error(f"Validate error: {result.get('error')}")
+        elif len(result['values']) == len(uids) and result['uids'] == uids:
+            total = sum(result['values'])
+            rewards = [x / total for x in result['values']]
+            bt.logging.info(f"Scored responses: {rewards}")
+            # Update the scores based on the rewards. You may want to define your own update_scores function for custom behavior.
+            self.update_scores(rewards, miner_uids)
+        else:
+            bt.logging.error(f"Validate failed, invalid result: {result}")
+        
         time.sleep(5)
 
 

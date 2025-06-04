@@ -13,4 +13,4 @@ if [ $rc -eq 7 ]; then
 fi
 
 echo "Running validator"
-python neurons/validator.py --netuid 2 --subtensor.chain_endpoint ws://127.0.0.1:9944 --subtensor.network local --wallet.name validator --wallet.hotkey default --logging.debug --neuron.epoch_length 3
+python neurons/validator.py --netuid 2 --subtensor.chain_endpoint ws://127.0.0.1:9944 --subtensor.network local --wallet.name validator --wallet.hotkey default --logging.debug #--neuron.epoch_length 101

@@ -115,7 +115,7 @@ class BaseMinerNeuron(BaseNeuron):
         # This loop maintains the miner's operations until intentionally stopped.
         try:
             while not self.should_exit:
-                # bt.logging.info(f"Waiting for block: {self.block} - {self.metagraph.last_update[self.uid]} < {self.config.neuron.epoch_length}")
+                # bt.logging.trace(f"Waiting for block: {self.block} - {self.metagraph.last_update[self.uid]} < {self.config.neuron.epoch_length}")
                 while (
                     self.block - self.metagraph.last_update[self.uid]
                     < self.config.neuron.epoch_length
@@ -131,6 +131,7 @@ class BaseMinerNeuron(BaseNeuron):
                 # bt.logging.info(f"Syncing metagraph")
                 self.sync()
                 self.step += 1
+                time.sleep(1)
 
         # If someone intentionally stops the miner, it'll safely terminate operations.
         except KeyboardInterrupt:

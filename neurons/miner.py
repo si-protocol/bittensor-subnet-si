@@ -4,14 +4,14 @@
 # Copyright © 2023 <your name>
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-# documentation files (the “Software”), to deal in the Software without restriction, including without limitation
+# documentation files (the "Software"), to deal in the Software without restriction, including without limitation
 # the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
 # and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 # The above copyright notice and this permission notice shall be included in all copies or substantial portions of
 # the Software.
 
-# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
 # THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 # THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
@@ -53,15 +53,14 @@ class Miner(BaseMinerNeuron):
         the miner's intended operation. This method demonstrates a basic transformation of input data.
         """
 
-        bt.logging.info(f"Miner forward: {synapse.input} (type: {type(synapse.input)})")
+        bt.logging.debug(f"Miner forward: {synapse.input})")
         if synapse.input.get("__type__") == "miner_health":
             synapse.output = {"status": "ok", "uid": self.uid, "device": self.device}
         else:
             client = MinerClient(self.uid)
             response = client.post("/sapi/node/task/create", json=synapse.input)
-            bt.logging.info(f"Miner forward response: {response} (type: {type(response)})")
+            bt.logging.debug(f"Miner forward response: {response} (type: {type(response)})")
             synapse.output = response
-            bt.logging.info(f"Miner synapse.output: {synapse.output} (type: {type(synapse.output)})")
         return synapse
 
 
@@ -166,6 +165,14 @@ class Miner(BaseMinerNeuron):
             f"Prioritizing {synapse.dendrite.hotkey} with value: {priority}"
         )
         return priority
+
+
+    # def run(self):
+    #     while True:
+    #         bt.logging.info(f"Miner running... {time.time()}")
+    #         # self.sync_metagraph()
+    #         bt.logging.info(f"My uid: {self.uid}, last_update: {self.metagraph.last_update[self.uid]}, block: {self.subtensor.get_current_block()}")
+    #         time.sleep(5)
 
 
 # This is the main function, which runs the miner.
