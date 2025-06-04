@@ -196,11 +196,11 @@ class BaseMinerNeuron(BaseNeuron):
         # Sync the metagraph.
         self.metagraph.sync(subtensor=self.subtensor)
 
-        # log = (
-        #     f"resync_metagraph() | "
-        #     f"Block: {self.metagraph.block.item()} | "
-        #     f"Incentive: {self.metagraph.I[self.uid]} | "
-        # )
-        # bt.logging.info(log)
-
-        # bt.logging.info(f"last_update[{self.uid}] = {self.metagraph.last_update[self.uid]}")
+        log = (
+            f"resync_metagraph() | "
+            f"uid: {self.uid} | "
+            f"last_update[{self.uid}]: {self.metagraph.last_update[self.uid]} | "
+            f"Block: {self.metagraph.block.item()} | "
+            f"Incentive: {self.metagraph.I[self.uid]} | "
+        )
+        bt.logging.info(log)

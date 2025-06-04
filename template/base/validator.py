@@ -269,7 +269,6 @@ class BaseValidatorNeuron(BaseNeuron):
         bt.logging.debug("uint_uids", uint_uids)
 
         # Set the weights on chain via our subtensor connection.
-        bt.logging.info(f"Before set_weights: my uid: {self.uid}, last_update: {self.metagraph.last_update[self.uid]}, block: {self.block}")
         result, msg = self.subtensor.set_weights(
             wallet=self.wallet,
             netuid=self.config.netuid,
@@ -281,7 +280,7 @@ class BaseValidatorNeuron(BaseNeuron):
         )
         # sync once, ensure get latest chain state
         self.metagraph.sync(subtensor=self.subtensor)
-        bt.logging.info(f"After set_weights: my uid: {self.uid}, last_update: {self.metagraph.last_update[self.uid]}, block: {self.block}")
+        bt.logging.info(f"set_weights: my uid: {self.uid}, last_update: {self.metagraph.last_update[self.uid]}, block: {self.block}")
         if result is True:
             bt.logging.info("set_weights on chain successfully!")
         else:
