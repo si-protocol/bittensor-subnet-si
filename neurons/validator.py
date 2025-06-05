@@ -34,7 +34,7 @@ from template.validator.reward import get_rewards
 from template.utils.uids import get_random_uids
 import services.protocol as protocol
 from services.config import settings
-
+from services.security import verify_token
 from services.api import ValidatorClient
 
 
@@ -68,6 +68,10 @@ class Validator(BaseValidatorNeuron):
 
         @app.post("/receive")
         async def receive(request: Request):
+            token = request.headers.get("Authorization")
+            if not verify_token(token):
+                return {"error": "Unauthorized"}
+            
             data = await request.json()
             if data is None:
                 return {"error": "Missing 'input' in request body"}

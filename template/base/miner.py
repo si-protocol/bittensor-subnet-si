@@ -193,16 +193,14 @@ class BaseMinerNeuron(BaseNeuron):
 
     def resync_metagraph(self):
         """Resyncs the metagraph and updates the hotkeys and moving averages based on the new metagraph."""
-        try:
-            self.metagraph.sync(subtensor=self.subtensor)
-            bt.logging.info(f"All last_update: {list(self.metagraph.last_update)}")
-            log = (
-                f"resync_metagraph() | "
-                f"uid: {self.uid} | "
-                f"last_update[{self.uid}]: {self.metagraph.last_update[self.uid]} | "
-                f"Block: {self.metagraph.block.item()} | "
-                f"Incentive: {self.metagraph.I[self.uid]} | "
-            )
-            bt.logging.info(log)
-        except Exception as e:
-            bt.logging.error(f"Metagraph sync error: {e}")
+        # Sync the metagraph.
+        self.metagraph.sync(subtensor=self.subtensor)
+
+        log = (
+            f"resync_metagraph() | "
+            f"uid: {self.uid} | "
+            f"last_update[{self.uid}]: {self.metagraph.last_update[self.uid]} | "
+            f"Block: {self.metagraph.block.item()} | "
+            f"Incentive: {self.metagraph.I[self.uid]} | "
+        )
+        bt.logging.info(log)

@@ -167,14 +167,6 @@ class Miner(BaseMinerNeuron):
         return priority
 
 
-    # def run(self):
-    #     while True:
-    #         bt.logging.info(f"Miner running... {time.time()}")
-    #         # self.sync_metagraph()
-    #         bt.logging.info(f"My uid: {self.uid}, last_update: {self.metagraph.last_update[self.uid]}, block: {self.subtensor.get_current_block()}")
-    #         time.sleep(5)
-
-
 # This is the main function, which runs the miner.
 if __name__ == "__main__":
     with Miner() as miner:

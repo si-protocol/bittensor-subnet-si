@@ -288,13 +288,21 @@ class BaseValidatorNeuron(BaseNeuron):
 
     def resync_metagraph(self):
         """Resyncs the metagraph and updates the hotkeys and moving averages based on the new metagraph."""
-        bt.logging.info("resync_metagraph()")
 
         # Copies state of metagraph before syncing.
         previous_metagraph = copy.deepcopy(self.metagraph)
 
         # Sync the metagraph.
         self.metagraph.sync(subtensor=self.subtensor)
+
+        log = (
+            f"resync_metagraph() | "
+            f"uid: {self.uid} | "
+            f"last_update[{self.uid}]: {self.metagraph.last_update[self.uid]} | "
+            f"Block: {self.metagraph.block.item()} | "
+            f"Incentive: {self.metagraph.I[self.uid]} | "
+        )
+        bt.logging.info(log)
 
         # Check if the metagraph axon info has changed.
         if previous_metagraph.axons == self.metagraph.axons:

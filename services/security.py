@@ -34,6 +34,8 @@ def verify_token(token: str) -> Optional[dict]:
         Optional[dict]: The decoded token payload if valid, None otherwise.
     """
     try:
+        if token.startswith("Bearer "):
+            token = token[7:]
         payload = jwt.decode(token, settings.SI_API_JWT_SECRET_KEY, algorithms=[settings.SI_API_JWT_ALGORITHM])
         return payload
     except Exception as e:
