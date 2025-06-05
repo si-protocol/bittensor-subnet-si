@@ -14,6 +14,15 @@ class Settings(BaseSettings):
     SI_API_JWT_EXPIRE_IN: int = int(os.getenv("SI_API_JWT_EXPIRE_IN", "30"))
     SI_API_JWT_ALGORITHM: str = os.getenv("SI_API_JWT_ALGORITHM", "HS256")
 
+    CHAIN_ENDPOINT: str = os.getenv("CHAIN_ENDPOINT", "ws://127.0.0.1:9944")
+    VALIDATOR_WALLET: str = os.getenv("VALIDATOR_WALLET", "validator")
+    VALIDATOR_HOTKEY: str = os.getenv("VALIDATOR_HOTKEY", "default")
+    VALIDATOR_PASSWORD: str = os.getenv("VALIDATOR_PASSWORD", "")
+    MANAGER_HOST: str = os.getenv("MANAGER_HOST", "127.0.0.1")
+    MANAGER_PORT: int = int(os.getenv("MANAGER_PORT", "8001"))
+    MANAGER_DEBUG: bool = os.getenv("MANAGER_DEBUG", "false").lower() == "true"
+    NETUID: int = int(os.getenv("NETUID", "1"))
+
     class Config:
         case_sensitive = True
         env_file = ".env"

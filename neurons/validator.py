@@ -62,13 +62,13 @@ class Validator(BaseValidatorNeuron):
         # TODO(developer): Anything specific to your use case you can do here
 
     def start_http_server(self):
-        """start FastAPI HTTP server, expose /receive route"""
+        """start FastAPI HTTP server"""
         app = FastAPI()
         validator_self = self
 
-        @app.post("/receive")
+        @app.post("/task/receive")
         async def receive(request: Request):
-            token = request.headers.get("Authorization")
+            token = request.headers.get("Authorization", "")
             if not verify_token(token):
                 return {"error": "Unauthorized"}
             
@@ -81,6 +81,25 @@ class Validator(BaseValidatorNeuron):
             )
             responses = future.result()
             return responses
+        
+        @app.post("/stake/add")
+        async def stake_add(request: Request):
+            # token = request.headers.get("Authorization", "")
+            # if not verify_token(token):
+            #     return {"error": "Unauthorized"}
+            data = await request.json()
+            amount = data.get("amount")
+            try:
+                amount = float(amount)
+                if amount <= 0:
+                    return {"error": "Amount must be greater than 0"}
+            except (TypeError, ValueError):
+                return {"error": "Amount must be a valid number"}
+            future = asyncio.run_coroutine_threadsafe(
+                validator_self.stake_add(amount), validator_self.loop
+            )
+            responses = future.result()
+            return responses
 
         def run():
             uvicorn.run(app, host=self.http_host, port=self.http_port, log_level="info")
@@ -89,6 +108,19 @@ class Validator(BaseValidatorNeuron):
         self.http_thread = threading.Thread(target=run, daemon=True)
         self.http_thread.start()
         bt.logging.info(f"HTTP server started on port {self.http_port}")
+
+    async def stake_add(self, amount):
+        result = self.subtensor.add_stake(
+            wallet=self.wallet,
+            netuid=self.config.netuid,
+            amount=amount,
+            wait_for_finalization=True
+        )
+        bt.logging.info(f"Stake add result: {result}")
+        return {
+            "success": result,
+            "message": None if result else "Stake failed, see logs for details."
+        }
 
     async def forward_with_input(self, user_input):
         miner_uids = get_random_uids(self, k=self.config.neuron.sample_size)
