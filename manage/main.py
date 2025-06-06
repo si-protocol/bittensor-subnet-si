@@ -1,9 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from services.config import settings
-from router import stake
+from manage.router import stake
+from manage.middlewares.auth import AuthMiddleware
+from fastapi.openapi.utils import get_openapi
+from fastapi.security import HTTPBearer
+import logging
 
+logging.basicConfig(level=settings.MANAGER_DEBUG)
 
 app = FastAPI(
     title="Subnet Manager",
@@ -21,8 +25,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(AuthMiddleware)
+
 # Include routers
 app.include_router(stake.router)
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+    )
+    openapi_schema["components"]["securitySchemes"] = {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    }
+    # apply BearerAuth globally
+    for path in openapi_schema["paths"].values():
+        for method in path.values():
+            method.setdefault("security", [{"BearerAuth": []}])
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 
 @app.get("/")
@@ -34,8 +65,9 @@ async def root():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
-        app,
+        "manage.main:app",
         host=settings.MANAGER_HOST,
         port=settings.MANAGER_PORT,
-        reload=settings.MANAGER_DEBUG
+        log_level=settings.MANAGER_DEBUG.lower(),
+        reload=settings.MANAGER_RELOAD
     ) 

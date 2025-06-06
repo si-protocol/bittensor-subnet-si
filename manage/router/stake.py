@@ -1,12 +1,11 @@
-import time
 import subprocess
 import json
 from services.config import settings
 from fastapi import APIRouter, Depends, HTTPException, Query
 import pexpect
 from pydantic import BaseModel
-import logging
 import re
+import logging
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/stake", tags=["stake"])
